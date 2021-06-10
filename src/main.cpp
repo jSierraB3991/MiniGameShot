@@ -1,5 +1,7 @@
-#include <iostream>
+#include "Game.h"
 
-int main() {
-    std::cout << "Hello Easy C++ project!" << std::endl;
+int main()
+{
+    Game game({800, 600}, "Mini Game Show");
+    return 0;
 }
