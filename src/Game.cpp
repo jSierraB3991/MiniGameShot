@@ -11,6 +11,13 @@ Game::Game(Vector2f resolution, std::string title)
     // No Show Mouse
     this->window->setMouseCursorVisible(false);
 
+    for (int i = 0; i < 4; i++) {
+        this->slotsMonsters[i] = false;
+        enemy[i] = NULL;
+    }
+    
+    clock = new Clock;
+    floatTime = 0;
     this->chargeGraphics();
     this->gameLoop();
 } 
@@ -20,9 +27,31 @@ void Game::gameLoop()
     while (!this->isGameOver)
     {
         this->window->clear();
+        *time = this->clock->getElapsedTime();
         this->display();
         this->processEvent();
         this->window->display();
+
+        if(time->asSeconds() > 5 + floatTime){
+
+            floatTime = time->asSeconds();
+            int result = rand() % 100 + 1;
+            if(result < 30){
+                // No create Moster
+            }
+            else{
+                auto slotOcupe = false;
+                while(!slotOcupe)
+                {
+                    int numSlot = rand() % 3 + 0;
+                    if(slotsMonsters[numSlot] == false){
+                        slotsMonsters[numSlot] = true;
+                        enemy[numSlot] = new Enemy({200.f * numSlot, 30});
+                        slotOcupe = true;
+                    }
+                }
+            }
+        }
     }
     
 }
@@ -30,27 +59,16 @@ void Game::gameLoop()
 void Game::display()
 {
     this->window->draw(*sprtBackground);
-    for (int i = 0; i < 3; i++)
-    {
-        this->window->draw(*this->sprtMosters[i]);
+    for (int i = 0; i < 4; i++) {
+        if(enemy[i] != NULL){
+            this->window->draw(enemy[i]->getSprite());
+        }
     }
     this->window->draw(*sprtMira);
 }
 
 void Game::chargeGraphics()
 {
-    std::string path = "images/enemy_";
-
-    for (int i = 0; i < 3; i++)
-    {
-        Texture *txtMoster = new Texture;
-        txtMoster->loadFromFile(path + std::to_string(i+1) + ".jpg");
-        this->sprtMosters[i] = new Sprite;
-        this->sprtMosters[i]->setTexture(*txtMoster);
-        Vector2f sizeMonster(txtMoster->getSize().x, txtMoster->getSize().y);
-        this->sprtMosters[i]->setScale(300.f / sizeMonster.x, 300.f / sizeMonster.y);
-        
-    }
     Texture* background = new Texture;
     background->loadFromFile("images/back.jpg");
     this->sprtBackground = new Sprite;
@@ -59,7 +77,7 @@ void Game::chargeGraphics()
         (float)this->window->getSize().x/background->getSize().x,
         (float)this->window->getSize().y/background->getSize().y
     );
-    
+
     Texture mira;
     mira.loadFromFile("images/mira.png");
     this->sprtMira = new Sprite;
@@ -72,7 +90,6 @@ void Game::chargeGraphics()
         30.f/mira.getSize().x,
         30.f/mira.getSize().y
     );
-    this->sprtMira->setColor(Color::White);
 }
 
 
@@ -84,7 +101,6 @@ void Game::processEvent()
         {
         case Event::MouseMoved:
             this->sprtMira->setPosition((Vector2f)Mouse::getPosition(*this->window));
-            //std::cout << "x: " << Mouse::getPosition(*this->window).x << ", y: " << Mouse::getPosition(*this->window).y << std::endl;
             break;
         
         case Event::Closed:

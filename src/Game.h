@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "iostream"
+#include "Enemy.h"
 
 using namespace sf;
 
@@ -16,12 +17,18 @@ public:
 private:
     RenderWindow* window;
     
-    Sprite* sprtMosters[3];
     Sprite* sprtBackground;
     Sprite* sprtMira;
 
     Event* event;
 
+    Clock* clock;
+    Time* time;
+    float floatTime;
+    
+    Enemy* enemy[4];
+
     bool isGameOver;
+    bool slotsMonsters[4];
     int fps;
 };
