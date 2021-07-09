@@ -13,6 +13,7 @@ public:
     void chargeGraphics();
     void display();
     void processEvent();
+    void checkEnemy();
 
 private:
     RenderWindow* window;

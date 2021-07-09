@@ -26,6 +26,7 @@ void Game::gameLoop()
 {
     while (!this->isGameOver)
     {
+        this->checkEnemy();
         this->window->clear();
         *time = this->clock->getElapsedTime();
         this->display();
@@ -46,7 +47,7 @@ void Game::gameLoop()
                     int numSlot = rand() % 3 + 0;
                     if(slotsMonsters[numSlot] == false){
                         slotsMonsters[numSlot] = true;
-                        enemy[numSlot] = new Enemy({200.f * numSlot, 30});
+                        enemy[numSlot] = new Enemy({200.f * numSlot, 30.0});
                         slotOcupe = true;
                     }
                 }
@@ -108,9 +109,37 @@ void Game::processEvent()
             exit(0);
             break;
 
-        default:
+        case Event::MouseButtonPressed:
+            FloatRect *recta = new FloatRect(this->sprtMira->getPosition(), (Vector2f)this->sprtMira->getTexture()->getSize());
+            for (int i = 0; i < 4; i++)
+            {
+                if(this->enemy[i])
+                {
+                    if(this->enemy[i]->getSprite().getGlobalBounds().intersects(*recta))
+                    {
+                        this->enemy[i] = NULL;
+                        this->slotsMonsters[i] = false;
+                    }
+                }
+            }
             break;
         }
+    }
+    
+}
+
+void Game::checkEnemy()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        if(this->enemy[i])
+        {
+            if(this->enemy[i]->getSeconds() > 5)
+            {
+                this->enemy[i] = NULL;
+                this->slotsMonsters[i] = false;
+            }
+        } 
     }
     
 }

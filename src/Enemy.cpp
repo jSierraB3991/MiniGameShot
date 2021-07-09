@@ -15,9 +15,18 @@ Enemy::Enemy(sf::Vector2f position)
 
 
     this->sprEnemy->setPosition(position);
+    this->clock = new sf::Clock;
+    this->time = new sf::Time;
+    *this->time = this->clock->getElapsedTime();
 }
 
 sf::Sprite Enemy::getSprite()
 {
     return *this->sprEnemy;
+}
+
+float Enemy::getSeconds()
+{
+    *this->time = this->clock->getElapsedTime();
+    return this->time->asSeconds();
 }
