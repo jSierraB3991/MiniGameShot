@@ -17,6 +17,7 @@ public:
 
 private:
     RenderWindow* window;
+    int lifes;
     
     Sprite* sprtBackground;
     Sprite* sprtMira;
@@ -28,6 +29,9 @@ private:
     float floatTime;
     
     Enemy* enemy[4];
+
+    Font *font;
+    Text *textLifes;
 
     bool isGameOver;
     bool slotsMonsters[4];

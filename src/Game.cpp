@@ -4,6 +4,7 @@ Game::Game(Vector2f resolution, std::string title)
 {
     this->isGameOver = false;
     this->fps = 60;
+    this->lifes = 5;
     this->event = new Event;
     this->window = new RenderWindow(VideoMode(resolution.x, resolution.y), title);
     
@@ -16,7 +17,21 @@ Game::Game(Vector2f resolution, std::string title)
         enemy[i] = NULL;
     }
     
+    this->font = new Font();
+    this->font->loadFromFile("fonts/hdounts.ttf");
+
+    this->textLifes = new Text;
+    this->textLifes = new Text();
+    this->textLifes->setFont(*this->font);
+    this->textLifes->setOrigin(
+        (float)this->textLifes->getGlobalBounds().width /2.0,
+        (float)this->textLifes->getGlobalBounds().height /2.0
+    );
+    this->textLifes->setPosition(400, 300);
+    this->textLifes->setColor(Color::Yellow);
+
     clock = new Clock;
+    this->time = new Time;
     floatTime = 0;
     this->chargeGraphics();
     this->gameLoop();
@@ -59,7 +74,10 @@ void Game::gameLoop()
 
 void Game::display()
 {
+    this->textLifes->setString(std::to_string(lifes));
+
     this->window->draw(*sprtBackground);
+    this->window->draw(*this->textLifes);
     for (int i = 0; i < 4; i++) {
         if(enemy[i] != NULL){
             this->window->draw(enemy[i]->getSprite());
@@ -138,8 +156,10 @@ void Game::checkEnemy()
             {
                 this->enemy[i] = NULL;
                 this->slotsMonsters[i] = false;
+                this->lifes--;
             }
         } 
     }
     
+    this->isGameOver = this->lifes <= 0;
 }
